@@ -88,6 +88,7 @@ static FARPROC GetProcAddressA(HMODULE hModule, LPCSTR lpProcName)
 #  undef GetProcAddress
 #  define GetProcAddress GetProcAddressA
 
+#ifndef LoadLibraryA
 static HINSTANCE LoadLibraryA(LPCSTR lpLibFileName)
 {
     WCHAR *fnamw;
@@ -110,6 +111,7 @@ static HINSTANCE LoadLibraryA(LPCSTR lpLibFileName)
 
     return LoadLibraryW(fnamw);
 }
+#endif
 # endif
 
 /* Part of the hack in "win32_load" ... */
