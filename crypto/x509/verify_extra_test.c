@@ -148,12 +148,28 @@ static int test_alt_chains_cert_forgery(void)
     lookup = X509_STORE_add_lookup(store, X509_LOOKUP_file());
     if (lookup == NULL)
         goto err;
-    if(!X509_LOOKUP_load_file(lookup, "certs/roots.pem", X509_FILETYPE_PEM))
+#ifdef OPENSSL_SYS_WINCE
+    if(!X509_LOOKUP_load_file(lookup, "/SD Card/OpenSSL/test/certs/roots.pem", X509_FILETYPE_PEM))
+#else
+    if(!X509_LOOKUP_load_file(lookup, "certs/roots.pem" , X509_FILETYPE_PEM))
+#endif
         goto err;
 
-    untrusted = load_certs_from_file("certs/untrusted.pem");
+    untrusted = load_certs_from_file(
+#ifdef OPENSSL_SYS_WINCE
+        "/SD Card/OpenSSL/test/certs/untrusted.pem"
+#else
+        "certs/untrusted.pem"
+#endif
+    );
 
-    if ((bio = BIO_new_file("certs/bad.pem", "r")) == NULL)
+    if ((bio = BIO_new_file(
+#ifdef OPENSSL_SYS_WINCE
+        "/SD Card/OpenSSL/test/certs/bad.pem"
+#else
+        "certs/bad.pem"
+#endif
+    , "r")) == NULL)
         goto err;
 
     if((x = PEM_read_bio_X509(bio, NULL, 0, NULL)) == NULL)
